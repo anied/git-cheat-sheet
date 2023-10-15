@@ -34,171 +34,297 @@ then if piping to `less` it must include the `-r` flag to handle colors properly
 ### Checking Out
 
 - Switch to a branch:
-    ```
-    git checkout <branch>
+    ```shell
+    $ git checkout <branch>
     ```
 - Checkout the last branch you were on:
-    ```
-    git checkout -
+    ```shell
+    $ git checkout -
     ```
 
 ### Branching
 
 - List local branches:
-    ```
-    git branch
+    ```shell
+    $ git branch
     ```
 - List local and remote branches:
-    ```
-    git branch --all
+    ```shell
+    $ git branch --all
     ```
 - Create a new branch:
-    ```
-    git branch <new-branch>
+    ```shell
+    $ git branch <new-branch>
     ```
   - Alternate to create branch and check it out in a single command:
-    ```
-    git checkout -b <new-branch>
+    ```shell
+    $ git checkout -b <new-branch>
     ```
 - Delete a branch:
-    ```
-    git branch --delete
+    ```shell
+    $ git branch --delete
     ```
     or
-    ```
-    git branch -d <branch>
+    ```shell
+    $ git branch -d <branch>
     ```
 - Force delete a branch:
-    ```
-    git branch --delete --force
+    ```shell
+    $ git branch --delete --force
     ```
     or
-    ```
-    git branch -D <branch>
+    ```shell
+    $ git branch -D <branch>
     ```
 
 ### Status
 
 - View the status of your workspace:
-    ```
-    git status
+    ```shell
+    $ git status
     ```
 
 ### Fetching/Pulling/Pushing
 
 - Fetch updates from the remote repository:
-    ```
-    git fetch
+    ```shell
+    $ git fetch
     ```
 - Pull changes from the remote copy of the branch into the local copy of the branch:
-    ```
-    git pull
+    ```shell
+    $ git pull
     ```
 - Push local changes to the remote copy of the current branch:
-    ```
-    git push
+    ```shell
+    $ git push
     ```
 
 ### Logging
 
 - View the commit log for the current branch:
-    ```
-    git log
+    ```shell
+    $ git log
     ```
 - Log for all project branches ([best used as an alias](https://gist.github.com/anied/fb7b9abdfe861205b23ed78be2a05a1a)):
-    ```
-    git log --graph --decorate --branches --remotes --color=always | less -r
+    ```shell
+    $ git log --graph --decorate --branches --remotes
     ```
 - Condensed log for all project branches ([best used as an alias](https://gist.github.com/anied/fb7b9abdfe861205b23ed78be2a05a1a)):
-    ```
-    git log --graph --decorate --branches --remotes --pretty=format:"%C(auto) %h %d %s" --color=always | less -r
+    ```shell
+    $ git log --graph --decorate --branches --remotes --pretty=format:"%C(auto) %h %d %s"
     ```
 
 ### Diffing
 
 - Show the difference between working directory and last commit:
-    ```
-    git diff
+    ```shell
+    $ git diff
     ```
 - Compare arbitrary points of history:
+    ```shell
+    $ git diff <branch1|commit1> <branch2|commit2>
     ```
-    git diff <branch1|commit1> <branch2|commit2>
-    ```
-
-## Aliasing
-
-Create custom Git aliases for your favorite commands. [Alex's personal alias list is maintained here: https://gist.github.com/anied/fb7b9abdfe861205b23ed78be2a05a1a](https://gist.github.com/anied/fb7b9abdfe861205b23ed78be2a05a1a)
-
-- Examples:
-  - Alias for checkout:
-      ```
-      git config --global alias.c checkout
-      ```
-  - Alias for a complex log command:
-      ```
-      git config --global alias.l '! git log --graph --decorate --branches --remotes --color=always | less -r'
-      ```
-  
-## Revertability Strategies
-
-- Learn how to recover from mistakes.
-- Revert, reset, and tagging strategies.
-
-## Advanced Git Operations
 
 ### Staging Changes
 
 - Stage all changes:
+    ```shell
+    $ git add --all
     ```
-    git add --all` or `git add .
+    or
+    ```shell
+    $ git add .
     ```
 - Stage a specific file:
+    ```shell
+    $ git add <file>
     ```
-    git add <file>
-    ```
-- Interactive staging:
-    ```
-    git add -i
+- [Interactive staging](https://git-scm.com/book/en/v2/Git-Tools-Interactive-Staging):
+    ```shell
+    $ git add -i
     ```
 
 ### Committing
 
 - Commit with a message:
-    ```
-    git commit -m "message"
+    ```shell
+    $ git commit -m "message"
     ```
 - Edit the message in your default editor:
-    ```
-    git commit
+    ```shell
+    $ git commit
     ```
 
-### Best Practices
-
-- Frequent, scoped, and small commits.
-- Avoid mingling whitespace changes and code changes.
-- Follow a descriptive commit message format.
+> #### Best Practices for committing
+> 
+> - Frequent, scoped, and small commits.
+> - Avoid mingling whitespace changes and code changes.
+> - Follow a descriptive commit message format.
 
 ### Unstaging Changes
 
 - Unstage all changes:
+    ```shell
+    $ git reset
     ```
-    git reset` or `git restore --staged .
+    or
+    ```shell
+    $ git restore --staged .
     ```
 - Unstage a file:
+    ```shell
+    $ git restore --staged <file>
     ```
-    git restore --staged <file>
-    ```
-- Unstage a subset of changes:
-    ```
-    git restore --staged --patch <file>
+- Interactively unstage a subset of changes by patch:
+    ```shell
+    $ git restore --staged --patch <file>
     ```
 
 ### Discarding Changes
 
-- Discard all changes and files:
+> **⚠️ Caution:** removing changes before they are committed can be _irreversible_. To remove local changes while keeping them recoverable, consider `stash`ing them instead of discarding them.
+
+- Discard all changes:
+    ```shell
+    $ git reset --hard
     ```
-    git reset --hard
+- Discard all changes and all new files:
+    ```shell
+    $ git reset --hard && git clean -f -d
     ```
+- Discard a file:
+    ```shell
+    $ rm path/to/your.file
+    ```
+    (or whatever the delete/remove command is for your terminal environment)
+- Discard a subset of changes within a file:
+    ```shell
+    $ git restore --patch path/to/your.file
+    ```
+
+## Aliasing
+
+Create custom Git aliases for your favorite commands.
+
+[Alex's personal alias list is maintained here: https://gist.github.com/anied/fb7b9abdfe861205b23ed78be2a05a1a](https://gist.github.com/anied/fb7b9abdfe861205b23ed78be2a05a1a)
+
+- Examples:
+  - Alias for checkout:
+      ```shell
+      $ git config --global alias.c checkout
+      ```
+  - Alias for a complex log command (including manual pager piping):
+      ```shell
+      $ git config --global alias.l '! git log --graph --decorate --branches --remotes --color=always | less -r'
+      ```
+  
+## Revertability&trade; Strategies & Workflows
+
+This is a collection of strategies and workflows that help you avoid and/or recover from potential data loss.
+
+### Reverting
+
+Creates a commit that undoes a previous commit. _The further in the past of the repo history the target commit is, the higher the likelihood that it will not revert cleanly._
+
+```shell
+$ git revert <commit>
+```
+
+### Resetting
+
+Allows you to move the current branch label to an arbitrary commit.
+
+```shell
+$ git reset --hard <commit|tag|branch>
+```
+
+Example: You accidentally merged a feature branch to you `main` branch before you intended to.  You identify the last commit on `main` before you merged as `12345`.  As such you run:
+
+```shell
+git reset --hard 12345
+```
+
+### Tagging
+
+Assigns a tag to a _commit_ that will remain _even if the branch is deleted_.
+
+- Assigns a tag to the current position of the `HEAD`:
+    ```shell
+    $ git tag <your-tag-name>
+    ```
+- Assigns a git tag to a specific location:
+    ```shell
+    $ git tag <branch|commit>
+    ```
+
+Example: You want to rebase, but also want a way to undo it if anything goes wrong in the process:
+
+1. Prior to rebasing, you checkout the branch you're trying to rebase
+1. Run `git tag rebase-rescue` to set a tag at the commit at the current branch tip position
+1. Run your rebase
+1. If there was a problem after you finished rebasing, you can run `git reset --hard rebase-rescue` from the rebased branch to hard reset it to the commit of the recovery tag
+
+### Stashing
+
+Allows you to store code for later without committing it.
+
+- Stash your changes:
+    ```shell
+    $ git stash
+    ```
+- Stash your changes and any new files:
+    ```shell
+    $ git stash --include-untracked
+    ```
+- Stash with a custom message to show in the list:
+    ```shell
+    $ git stash push -m "Saving for later"
+    ```
+- See the list of the current stashes:
+    ```shell
+    $ git stash list
+    ```
+- Review the patch of a specific stash reference `stash@{3}`:
+    ```shell
+    $ git stash show -p stash@{3}
+    ```
+- Apply `stash@{4}`
+    ```shell
+    $ git stash apply stash@{4}
+    ```
+- Clear all stashes
+    ```shell
+    git stash clear
+    ```
+
+Example: You need to stop in the middle of some feature work in order to work on a bug.  Your feature code isn't ready to be committed yet, though:
+
+```shell
+$ git stash push -m "feature work partially underway; stashing to work on a bug"
+```
+
+Later, when you come back, you can find the specific stash reference with `git stash list` and then apply it with `git stash apply <stash_reference>`.
+
+### Reflog
+
+- Learn how to recover from mistakes.
+- Revert, reset, and tagging strategies.
+
+## Git Rebasing Workflow
+
+## Git Bisecting
+
+## Additional Miscellaneous Commands
+
+
+
+
+
+
+
+
+
+
 
 ## Rebasing
 
