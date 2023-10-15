@@ -10,7 +10,7 @@
   - (can include branch name, whether there are local changes, whether there are staged changes, etc)
   - (the setup for this varies between platforms; you'll need to do some research for your specific OS and terminal environment)
 - **Aliases**: Create and manage custom command shortcuts for complex or common git commands
-  - [Alex's personal list is maintained here: https://gist.github.com/anied/fb7b9abdfe861205b23ed78be2a05a1a](https://gist.github.com/anied/fb7b9abdfe861205b23ed78be2a05a1a) 
+  - [Alex's personal alias list is maintained here: https://gist.github.com/anied/fb7b9abdfe861205b23ed78be2a05a1a](https://gist.github.com/anied/fb7b9abdfe861205b23ed78be2a05a1a) 
 - **Editor Configuration**: Set up your text editor for Git operations if you don't want to use the terminal default text editor (Vim, Nano, etc)
   - For VSCode this is done by:
     1. [Install VSCode CLI](https://code.visualstudio.com/docs/editor/command-line) (installed by default for some versions; check your terminal environment)
@@ -50,17 +50,29 @@ then if piping to `less` it must include the `-r` flag to handle colors properly
     ```
 - List local and remote branches:
     ```
-    git branch --all --color=always | less -r
+    git branch --all
     ```
 - Create a new branch:
     ```
     git branch <new-branch>
     ```
+  - Alternate to create branch and check it out in a single command:
+    ```
+    git checkout -b <new-branch>
+    ```
 - Delete a branch:
+    ```
+    git branch --delete
+    ```
+    or
     ```
     git branch -d <branch>
     ```
 - Force delete a branch:
+    ```
+    git branch --delete --force
+    ```
+    or
     ```
     git branch -D <branch>
     ```
@@ -78,11 +90,11 @@ then if piping to `less` it must include the `-r` flag to handle colors properly
     ```
     git fetch
     ```
-- Pull changes from the remote repository:
+- Pull changes from the remote copy of the branch into the local copy of the branch:
     ```
     git pull
     ```
-- Push changes to the remote repository:
+- Push local changes to the remote copy of the current branch:
     ```
     git push
     ```
@@ -93,15 +105,11 @@ then if piping to `less` it must include the `-r` flag to handle colors properly
     ```
     git log
     ```
-- Scrollable log with color:
-    ```
-    git log --color=always --decorate | less -r
-    ```
-- Log for all project branches:
+- Log for all project branches ([best used as an alias](https://gist.github.com/anied/fb7b9abdfe861205b23ed78be2a05a1a)):
     ```
     git log --graph --decorate --branches --remotes --color=always | less -r
     ```
-- Condensed log for all project branches:
+- Condensed log for all project branches ([best used as an alias](https://gist.github.com/anied/fb7b9abdfe861205b23ed78be2a05a1a)):
     ```
     git log --graph --decorate --branches --remotes --pretty=format:"%C(auto) %h %d %s" --color=always | less -r
     ```
@@ -112,18 +120,15 @@ then if piping to `less` it must include the `-r` flag to handle colors properly
     ```
     git diff
     ```
-- Scrollable diff with color:
-    ```
-    git diff --color=always | less -r
-    ```
 - Compare arbitrary points of history:
     ```
-    git diff <branch1> <branch2>
+    git diff <branch1|commit1> <branch2|commit2>
     ```
 
 ## Aliasing
 
-- Create custom Git aliases for your favorite commands.
+Create custom Git aliases for your favorite commands. [Alex's personal alias list is maintained here: https://gist.github.com/anied/fb7b9abdfe861205b23ed78be2a05a1a](https://gist.github.com/anied/fb7b9abdfe861205b23ed78be2a05a1a)
+
 - Examples:
   - Alias for checkout:
       ```
