@@ -18,51 +18,121 @@
         ```
         $ git config --global core.editor "code --wait"
         ```
+- **Consider using [warp](https://www.warp.dev/) as your terminal environment,** as it includes many developer quality of life improvements as well as the ability to AI-generate commands from plain English input.  
 
 ## Git Basics
 
+> **NOTE:** To pipe output to a text pager such as nano or less, you'll need to make some adjustments to the actual command
+to tell it to include color, and potentially to tell the pager how to interpret the colors it is receiving.  For
+example, a `log` command must be told to include color (`--color=always`), to include "decoration" (`--decorate`), and
+then if piping to `less` it must include the `-r` flag to handle colors properly, like so:
+> ```
+> git log --graph --decorate --branches --remotes --color=always | less -r
+> ```
+> Generally for something this complex it might be simpler to alias the command.
+
 ### Checking Out
 
-- `git checkout <branch>`: Switch to a branch.
-- `git checkout -`: Checkout the last branch you were on.
+- Switch to a branch:
+    ```
+    git checkout <branch>
+    ```
+- Checkout the last branch you were on:
+    ```
+    git checkout -
+    ```
 
 ### Branching
 
-- `git branch`: List local branches.
-- `git branch --all --color=always | less -r`: List local and remote branches.
-- `git branch <new-branch>`: Create a new branch.
-- `git branch -d <branch>`: Delete a branch.
-- `git branch -D <branch>`: Force delete a branch.
+- List local branches:
+    ```
+    git branch
+    ```
+- List local and remote branches:
+    ```
+    git branch --all --color=always | less -r
+    ```
+- Create a new branch:
+    ```
+    git branch <new-branch>
+    ```
+- Delete a branch:
+    ```
+    git branch -d <branch>
+    ```
+- Force delete a branch:
+    ```
+    git branch -D <branch>
+    ```
 
 ### Status
 
-- `git status`: View the status of your workspace.
+- View the status of your workspace:
+    ```
+    git status
+    ```
 
 ### Fetching/Pulling/Pushing
 
-- `git fetch`: Fetch updates from the remote repository.
-- `git pull`: Pull changes from the remote repository.
-- `git push`: Push changes to the remote repository.
+- Fetch updates from the remote repository:
+    ```
+    git fetch
+    ```
+- Pull changes from the remote repository:
+    ```
+    git pull
+    ```
+- Push changes to the remote repository:
+    ```
+    git push
+    ```
 
 ### Logging
 
-- `git log`: View the commit log for the current branch.
-- `git log --color=always --decorate | less -r`: Scrollable log with color.
-- `git log --graph --decorate --branches --remotes --color=always | less -r`: Log for all project branches.
-- `git log --graph --decorate --branches --remotes --pretty=format:"%C(auto) %h %d %s" --color=always | less -r`: Condensed log for all project branches.
+- View the commit log for the current branch:
+    ```
+    git log
+    ```
+- Scrollable log with color:
+    ```
+    git log --color=always --decorate | less -r
+    ```
+- Log for all project branches:
+    ```
+    git log --graph --decorate --branches --remotes --color=always | less -r
+    ```
+- Condensed log for all project branches:
+    ```
+    git log --graph --decorate --branches --remotes --pretty=format:"%C(auto) %h %d %s" --color=always | less -r
+    ```
 
 ### Diffing
 
-- `git diff`: Show the difference between working directory and last commit.
-- `git diff --color=always | less -r`: Scrollable diff with color.
-- `git diff <branch1> <branch2>`: Compare arbitrary points of history.
+- Show the difference between working directory and last commit:
+    ```
+    git diff
+    ```
+- Scrollable diff with color:
+    ```
+    git diff --color=always | less -r
+    ```
+- Compare arbitrary points of history:
+    ```
+    git diff <branch1> <branch2>
+    ```
 
 ## Aliasing
 
 - Create custom Git aliases for your favorite commands.
 - Examples:
-  - `git config --global alias.c checkout`: Alias for checkout.
-  - `git config --global alias.l '! git log --graph --decorate --branches --remotes --color=always | less -r'`: Alias for a complex log command.
+  - Alias for checkout:
+      ```
+      git config --global alias.c checkout
+      ```
+  - Alias for a complex log command:
+      ```
+      git config --global alias.l '! git log --graph --decorate --branches --remotes --color=always | less -r'
+      ```
   
 ## Revertability Strategies
 
@@ -73,14 +143,29 @@
 
 ### Staging Changes
 
-- `git add --all` or `git add .`: Stage all changes.
-- `git add <file>`: Stage a specific file.
-- `git add -i`: Interactive staging.
+- Stage all changes:
+    ```
+    git add --all` or `git add .
+    ```
+- Stage a specific file:
+    ```
+    git add <file>
+    ```
+- Interactive staging:
+    ```
+    git add -i
+    ```
 
 ### Committing
 
-- `git commit -m "message"`: Commit with a message.
-- `git commit`: Edit the message in your default editor.
+- Commit with a message:
+    ```
+    git commit -m "message"
+    ```
+- Edit the message in your default editor:
+    ```
+    git commit
+    ```
 
 ### Best Practices
 
@@ -90,13 +175,25 @@
 
 ### Unstaging Changes
 
-- `git reset` or `git restore --staged .`: Unstage all changes.
-- `git restore --staged <file>`: Unstage a file.
-- `git restore --staged --patch <file>`: Unstage a subset of changes.
+- Unstage all changes:
+    ```
+    git reset` or `git restore --staged .
+    ```
+- Unstage a file:
+    ```
+    git restore --staged <file>
+    ```
+- Unstage a subset of changes:
+    ```
+    git restore --staged --patch <file>
+    ```
 
 ### Discarding Changes
 
-- `git reset --hard`: Discard all changes and files.
+- Discard all changes and files:
+    ```
+    git reset --hard
+    ```
 
 ## Rebasing
 
