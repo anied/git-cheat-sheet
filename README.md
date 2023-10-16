@@ -307,8 +307,20 @@ Later, when you come back, you can find the specific stash reference with `git s
 
 ### Reflog
 
-- Learn how to recover from mistakes.
-- Revert, reset, and tagging strategies.
+The log output from `git reflog` shows a history of all the positions the `HEAD` has occupied.  You can use this to recover things that are otherwise missing from history.  Here's an example of recovering a lost branch.
+
+1. You create a branch `feature/my-cool-feature` and do all your work for a feature on it.
+1. For some bizarre reason you never push it to the remote; it only exists on your machine.
+1. You checkout your `main` branch.
+1. You somehow accidentally delete `feature/my-cool-feature` branch!!! 😫😫😫
+1. Since the branch was never pushed to the remote, there is no reference to it at `origin` from which you can recover it
+1. However, you can run `git reflog`:
+    1. Find the reference for the last time you were on `feature/my-cool-feature` (if you had completed this exact sequence, it would probably be `HEAD@{0}`)
+    1. `git checkout <that-reference>`
+    1. Follow the instructions show on screen to restore the branch: `git switch -c feature/my-cool-feature`
+1. Voilà! Your branch is restored! 🎉
+
+> **NOTE:** The reflog is a _local_ reference; it does not get pushed to the remote.
 
 ## Git Rebasing Workflow
 
