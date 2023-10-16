@@ -411,16 +411,30 @@ If everything went great and you have no need to undo the rebase, you can finali
 
 ## Git Bisecting
 
-## Additional Miscellaneous Commands
+Git bisecting is a useful, semi-automated manner in which to efficiently review a range of commits to find when a specific thing happened.  This is particularly helpful for finding out when, how, and why something broke or otherwise changed in the codebase.  For the example below, we'll use a scenario in which something potentially broke in code and we need to track down the commit in which it happened to read the message and gain more context about the change.
 
+### Example
 
+In your user checkout flow for your e-commerce platform, there was previously a checkbox on the last step of the UI the user could click to mark the order as tax-exempt and remove a charge for tax.  This is now missing.  However, you can't find any tickets referencing this change, and are not certain if it was intentional or not.  There are no unit tests complaining that the tax exempt checkbox is missing, but it is possible that they were removed if this was an intentional change.  You decide to use `git bisect` to find the commit where this feature was removed in order to better understand if it was intentional or a mistake.
 
+1. You search history to find where the feature was added and checkout that commit.
+1. You start the bisecting operation:
+    ```shell
+    $ git bisect start
+    ```
+1. You mark the current commit as `good` because the feature was included and working properly at this point
+    ```shell
+    $ git bisect good
+    ```
+1. You checkout the tip of `main`, which is what is in Production where you know the feature is now missing; you mark this commit as `bad`:
+    ```shell
+    $ git checkout main
+    $ git bisect bad
+    ```
+1. Git begins running the bisecting algorithm.  It checkouts commits at the midpoint between the good and bad commits, showing you roughly how many more steps until the operation should be complete.  At each step, you check if the feature is missing or present by marking it `git bisect good` or `git bisect bad` in the terminal
+1. After a few steps, you find the offending commit.  You note that in the commit message it is noted the feature is being temporarily disabled, but should be re-enabled before being deployed to Production.  However, it appears this never happened.  Now that you understand the situation, you are able to speak with your project manager to get a ticket created to hotfix this issue.
 
-## Git Bisect
-
-- A semi-automated way to find a specific commit.
-
-## Honorable Mentions
+## Additional Miscellaneous Helpful Commands
 
 - Git Stash: Temporarily store changes.
 - Git Commit --amend: Change the most recent commit.
