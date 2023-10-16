@@ -324,24 +324,97 @@ The log output from `git reflog` shows a history of all the positions the `HEAD`
 
 ## Git Rebasing Workflow
 
+Rebasing is marginally more complex than simply merging, but the tradeoff is a highly organized, readable history, well-suited for collaboration.  It is an manner in which you can move a group of commits (generally a branch) from their current point in history to a new base.  _Optionally_, if rebasing "interactively," one can also apply additional operations, such as omitting certain commits, squashing certain points of history, editing commits, and more.
+
+> **NOTE**: Destructive history operations&mdash;such as squashing&mdash;are an _optional_ component of rebasing.  There is nothing required or necessarily implied about squashing history when rebasing; rebasing is generally, by default, a non-destructive operation in which you can retain your original separate and discrete commits.
+
+When rebasing, it is wise to make use of a "rescue tag;" this is a tag generated at the tip of the branch _prior_ to starting the rebase operation that can be used as a point to reset to should any issue be encountered and the operation need to be undone.  The whole process would look roughly like so:
+
+### Setup
+
+Make sure you have the latest versions of both the branch being rebased and the target branch onto which you will be rebasing:
+
+1. Get up-to-date reference for remote: `$ git fetch origin`
+1. Get latest of branch to be rebased:
+    ```shell
+    $ git checkout <branch-to-be-rebased>
+    $ git pull
+    ````
+1. Get latest of branch on to which you are rebasing (we'll assume `main` for example purposes here):
+    ```shell
+    $ git checkout main
+    $ git pull
+    ```
+
+### Set recovery tag
+
+Set a tag to which you can hard reset your branch should you need to undo your rebasing operation:
+
+1. Checkout your branch you will be rebasing: `git checkout <branch-to-be-rebased>`
+1. Tag the commit at the tip of the branch with a unique, recognizable tag.  One potential format would be a string concatenation of `RR_` (for rebase rescue), plus the branch name, plus a date string.  So for instance if the branch name was `my-cool-feature` you would tag it with:
+    ```shell
+    $ git tag RR_my-cool-feature_202310161013
+    ```
+    If you leverage this format and you are using [my aliases](https://gist.github.com/anied/fb7b9abdfe861205b23ed78be2a05a1a) then you could also accomplish this with:
+    ```shell
+    $ git rrt my-cool-feature
+    ```
+1. You can find this tag again by either listing all tags (`git tag` or `git tag --list`) or by reviewing a history log with all tags (`git log --decorate --graph --tags`)
+
+### Rebase
+
+Now that you've gotten the latest for each of the branches and set your rebase recovery tag you can run the rebase itself.
+
+1. Checkout the branch you intend on rebasing `git checkout <branch-to-be-rebased>`
+1. How you rebase depends on your needs:
+    + If you have no need to review nor edit the rebase steps (meaning you don't want to squash, edit, etc, nor verify the commits being rebased before running the operation), you can simply rebase to the target:
+        ```shell
+        $ git rebase <your-target-branch> # most likely `git rebase main` or `git rebase master`
+        ```
+    + If you want to review the rebase script or make additional changes, then use the `-i` flag to run an interactive rebase:
+        ```shell
+        $ git rebase -i <your-target-branch>
+        ```
+        Follow the on-screen directions.  **Note that if you haven't set an alternative editor for git ths script will open in whatever is the terminal default, which might not be a text editor with which you are familiar.**
+1. Handle any conflicts that may arise.  It is possible that you will encounter and have to resolve multiple conflicts at several steps of your rebase.  This is _potentially_ (but not necessarily) more labor-intensive than a simple merge, but the benefit of an organized commit history is worth the cost.
+
+### Recovery and/or clean-up
+
+#### Recovery
+
+Perhaps after your rebase you learn that you accidentally resolved a conflict incorrectly, and wish to re-run the rebase.  This is easy enough to do because you set a rebase rescue tag before you rebased.
+
+1. Find the name of your rebase rescue tag (if you recorded it you can just copy it to your clipboard, otherwise you'll need to find it by either listing all tags (`git tag` or `git tag --list`) or by reviewing a history log with all tags (`git log --decorate --graph --tags`))
+1. Checkout the branch you rebased:
+    ```shell
+    $ git checkout <branch-you-just-rebased>
+    ```
+1. Reset hard to your rescue tag:
+    ```shell
+    $ git reset --hard <your_rescue_tag>
+    ```
+
+#### Clean-up
+
+If everything went great and you have no need to undo the rebase, you can finalize things and clean-up.
+
+1. A simple `git push` won't work because you've rewritten history with the rebase.  To get your rebased branch to the remote you'll need to force push:
+    ```shell
+    $ git checkout <your-rebased-branch> # if it isn't already checked out
+    $ git push --force-with-lease # forces pushes unless there's new commits on the branch; useful if there are multiple collaborators working on a single branch
+    ```
+1. If you have any collaborators working on the same branch, alert them to the fact that you've rebased the branch; they'll need to pull down a fresh copy of the branch.  Having multiple developers working directly on a single branch is often complicated and fraught with extra overhead and potential for error, so hopefully this is seldom the case.
+1. Delete the rescue tag you previously made, as you have no further need for it:
+    ```shell
+    $ git tag --delete <your_rescue_tag>
+    ```
+
 ## Git Bisecting
 
 ## Additional Miscellaneous Commands
 
 
 
-
-
-
-
-
-
-
-
-## Rebasing
-
-- Rewriting history, moving commits, and other operations.
-- Pros and cons of merging-only vs. rebasing strategies.
 
 ## Git Bisect
 
