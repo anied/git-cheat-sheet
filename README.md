@@ -159,7 +159,7 @@ then if piping to `less` it must include the `-r` flag to handle colors properly
 > 
 > - Frequent, scoped, and small commits.
 > - Avoid mingling whitespace changes and code changes.
-> - Follow a descriptive commit message format.
+> - Establish and adhere to a commit message format (consider [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) or [cbeams' proposal](https://cbea.ms/git-commit/))
 
 ### Unstaging Changes
 
