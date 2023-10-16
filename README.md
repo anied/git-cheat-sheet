@@ -328,9 +328,11 @@ Rebasing is marginally more complex than simply merging, but the tradeoff is a h
 
 > **NOTE**: Destructive history operations&mdash;such as squashing&mdash;are an _optional_ component of rebasing.  There is nothing required or necessarily implied about squashing history when rebasing; rebasing is generally, by default, a non-destructive operation in which you can retain your original separate and discrete commits.
 
-When rebasing, it is wise to make use of a "rescue tag;" this is a tag generated at the tip of the branch _prior_ to starting the rebase operation that can be used as a point to reset to should any issue be encountered and the operation need to be undone.  The whole process would look roughly like so:
+When rebasing, it is wise to make use of a "rescue tag;" this is a tag generated at the tip of the branch _prior_ to starting the rebase operation that can be used as a point to reset to should any issue be encountered and the operation need to be undone.
 
-### Setup
+### Example Rebase Workflow
+
+#### Setup
 
 Make sure you have the latest versions of both the branch being rebased and the target branch onto which you will be rebasing:
 
@@ -346,7 +348,7 @@ Make sure you have the latest versions of both the branch being rebased and the 
     $ git pull
     ```
 
-### Set recovery tag
+#### Set recovery tag
 
 Set a tag to which you can hard reset your branch should you need to undo your rebasing operation:
 
@@ -361,7 +363,7 @@ Set a tag to which you can hard reset your branch should you need to undo your r
     ```
 1. You can find this tag again by either listing all tags (`git tag` or `git tag --list`) or by reviewing a history log with all tags (`git log --decorate --graph --tags`)
 
-### Rebase
+#### Rebase
 
 Now that you've gotten the latest for each of the branches and set your rebase recovery tag you can run the rebase itself.
 
@@ -371,16 +373,16 @@ Now that you've gotten the latest for each of the branches and set your rebase r
         ```shell
         $ git rebase <your-target-branch> # most likely `git rebase main` or `git rebase master`
         ```
-    + If you want to review the rebase script or make additional changes, then use the `-i` flag to run an interactive rebase:
+    + If you want to review the rebase script or make additional changes, then use the `-i` flag to run an [interactive rebase](#interactive-rebasing-example):
         ```shell
         $ git rebase -i <your-target-branch>
         ```
         Follow the on-screen directions.  **Note that if you haven't set an alternative editor for git ths script will open in whatever is the terminal default, which might not be a text editor with which you are familiar.**
 1. Handle any conflicts that may arise.  It is possible that you will encounter and have to resolve multiple conflicts at several steps of your rebase.  This is _potentially_ (but not necessarily) more labor-intensive than a simple merge, but the benefit of an organized commit history is worth the cost.
 
-### Recovery and/or clean-up
+#### Recovery and/or clean-up
 
-#### Recovery
+##### Recovery
 
 Perhaps after your rebase you learn that you accidentally resolved a conflict incorrectly, and wish to re-run the rebase.  This is easy enough to do because you set a rebase rescue tag before you rebased.
 
@@ -394,7 +396,7 @@ Perhaps after your rebase you learn that you accidentally resolved a conflict in
     $ git reset --hard <your_rescue_tag>
     ```
 
-#### Clean-up
+##### Clean-up
 
 If everything went great and you have no need to undo the rebase, you can finalize things and clean-up.
 
@@ -408,6 +410,80 @@ If everything went great and you have no need to undo the rebase, you can finali
     ```shell
     $ git tag --delete <your_rescue_tag>
     ```
+
+### Interactive rebasing example
+
+When you include the interactive flag (`-i`) when rebasing, you are telling git you wish to run an [interactive rebase (official docs)](https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History#_changing_multiple).  You will be presented with a text representation of the rebasing script that will look something like this:
+
+
+```
+pick f155792 Temp updates robots.txt to disallow indexing
+pick 1e7734a Initial attempt at clean-up of Gitlab CI YAML
+pick edb5dc4 Updates to newer syntaxes; fixes YAML to valid Gitlab CI syntax
+pick 63dd013 Makes start/stop logs clearer; removes allow failure from build task
+pick affd125 Fixes echo statements lacking quotation marks
+pick 01efee3 More logging fixing; some debugging around jobs not running
+pick f930732 More debugging
+pick 350f93a DEBUGGING: adding conditional rule to build job
+pick 17cccf8 DEBUG: attempting built-in deploy stage name for testing
+pick 631d63e Updated rules for other stages (missed last time)
+pick d77484e Checking filesystem with debugging task before fixing clone
+pick c8a36d9 TEMP COMMIT FOR DEBUGGING
+pick 5bf0170 Apparently the jobs are cached by commit :/
+pick aed1755 Reconsolidates stages into build stage
+pick a657d05 Removes preclean step from build; adds cspell.json
+pick eef27c6 Fills in .gitlab-ci.yml for attempting a deploy
+pick fc0b2cf Moves `before_script` steps into `build site` job
+pick 36fb1ed DEBUG: verifying env vars are available in the assume_role context
+pick c94ac71 DEBUG: Fixing typo from last commit
+pick 90591ad DEBUG: Trying more methods of accessing vars in fn context
+pick 20ff010 DEBUG: Troubleshooting syntax error with logging
+pick 1c5a4c1 DEBUG: Verifying vars are available in deploy job script
+pick f687602 DEBUG: Last commit yielded unexpected results; testing in build now
+pick 213472b DEBUG: Verified build sees injected ones; looking for vars now
+pick fdb262b Removing debugging logs
+
+# Rebase ce4065b..fdb262b onto ce4065b (25 commands)
+#
+# Commands:
+# p, pick <commit> = use commit
+# r, reword <commit> = use commit, but edit the commit message
+# e, edit <commit> = use commit, but stop for amending
+# s, squash <commit> = use commit, but meld into previous commit
+# f, fixup [-C | -c] <commit> = like "squash" but keep only the previous
+#                    commit's log message, unless -C is used, in which case
+#                    keep only this commit's message; -c is same as -C but
+#                    opens the editor
+# x, exec <command> = run command (the rest of the line) using shell
+# b, break = stop here (continue rebase later with 'git rebase --continue')
+# d, drop <commit> = remove commit
+# l, label <label> = label current HEAD with a name
+# t, reset <label> = reset HEAD to a label
+# m, merge [-C <commit> | -c <commit>] <label> [# <oneline>]
+# .       create a merge commit using the original merge commit's
+# .       message (or the oneline, if no original merge commit was
+# .       specified); use -c <commit> to reword the commit message
+#
+# These lines can be re-ordered; they are executed from top to bottom.
+#
+```
+
+> **Note that if you haven't set an alternative editor for git ths script will open in whatever is the terminal default, which might not be a text editor with which you are familiar.**
+
+The anatomy of these lines is as follows:
+
+```
+pick f155792 Temp updates robots.txt to disallow indexing
+```
+- `pick`: The operation being applied to the commit
+- `f155792`: The commit to which the operation will be applied
+- "`Temp updates robots.txt to disallow indexing`": The commit message for the commit
+
+So this essentially states that the commit `f155792` (with commit message "`Temp updates robots.txt to disallow indexing`") will be cherry-picked onto commit `ce4065b` (from the top of the comments section: "`# Rebase ce4065b..fdb262b onto ce4065b (25 commands)`").
+
+Each line will be executed in order, stopping as necessary for conflict resolution or editing, until the script completes or you abort the rebase process with `git rebase --abort`.  To omit a commit from the script, you can delete the line, or comment the line out with `#`, or change `pick` to `drop`.  There are other options, such as `squash` (collapsing into previous commit), `reword` (lets you update the commit message), `edit` (lets you make changes to a commit), and more.  The entire list of options is available in the comment at the bottom of the rebase script.
+
+Edit the script to adjust the rebase to exactly what you need to do for your rebasing operation.  Once completed, save and close the text editor, and git will attempt to apply your rebase script.
 
 ## Git Bisecting
 
@@ -436,10 +512,107 @@ In your user checkout flow for your e-commerce platform, there was previously a 
 
 ## Additional Miscellaneous Helpful Commands
 
-- Git Stash: Temporarily store changes.
-- Git Commit --amend: Change the most recent commit.
-- Sharing Code with a Patch: Generate and apply patches.
-- Git Cherry-pick: Copy a commit from one branch to another.
-- Git Blame: Find out who wrote a line of code.
-- Combining Commands with `&&`.
-- Git Reflog: View a log of your actions.
+### Git Stash
+
+A mechanism to temporarily store changes without committing them
+
+- Add your changes to the stash (excludes new files, excludes a custom message in the stash list):
+    ```shell
+    $ git stash
+    ```
+- Push your changes to the stash _including_ new files with a custom message in the stash list
+    ```shell
+    $ git stash --include-untracked push -m "Dear git please take care of this awesome code i wrote"
+    ```
+- List what's in the stash
+    ```shell
+    $ git stash list
+    ```
+- See what's in a specific stash item
+    ```shell
+    $ git stash show -p stash@{3}
+    ```
+- Remove and apply the most recent stash (fast, but risky because if if doesn't apply cleanly you've lost the reference)
+    ```shell
+    $ git stash pop
+    ```
+- Apply the most recent stash without removing it (safer)
+    ```shell
+    $ git stash apply
+    ```
+- Apply a specific stash
+    ```shell
+    $ git stash apply stash@{2}
+    ```
+
+### Amending Commits
+
+Change the most recent commit (meaning the commit at `HEAD`):
+
+```shell
+$ git commit --amend
+```
+
+Opens a text editor to update the commit message; any changes currently staged will be included in the new commit.  If you do this after having already pushed to origin you'll need to `--force-with-lease` as this is a history-changing operation.
+
+> If you need to amend older commits, you're better off using an [interactive rebase](#interactive-rebasing-example), finding the commit you wish to update, and change `pick` to `edit` or `reword` in the rebase script (depending on what it is you are trying to do).
+
+### Sharing Code with a Patch
+
+You can take the current `diff` of your local environment and push it into a patch file, which can then be shared to other developers and applied as needed.  This is particularly useful if you are pairing and need to send changes to another developer to commit.
+
+#### Generating a patch file
+
+To generate a patch file:
+
+```shell
+$ git diff >> my-patch-file.patch
+```
+
+> (The command to push to a file may differ based on platform)
+
+You will now see a new file in your local directory called `my-patch-file.patch`; this file can be shared to any other developer.  
+
+#### Applying a patch  file
+
+If you are the recipient of a patch file, place it in your repo and apply it like so:
+
+```shell
+$ git apply my-patch-file.patch
+```
+
+Note that you ideally should be on the same branch/commit as the person who recorded the patch; any deltas between your local filesystem and the filesystem in which the patch was generated could lead to merge conflicts or other unexpected issues when applying.
+
+#### Clean-up
+
+Make sure to delete the file before you make your next commit (only because there's generally no reason to clutter up your source code with old patch files).
+
+### Git Cherry-pick
+
+A simple command that lets you copy a commit onto your local branch:
+
+`git cherry-pick <commit_hash>`
+
+Generally a rebase is your preferred workflow, but there are some circumstances in which direct cherry-picking is the most convenient or efficient way to move around one or more commits.
+
+### Git Blame
+
+Find out who most recently edited a line of code by printing out the file with commit details on a per line basis with `git blame`:
+
+```shell
+$ git blame path/to/file
+```
+
+> If you are using [git-lens](https://gitlens.amod.io/) in VSCode you have no need for this, as the plug-in will generate this for you inline in your editor.
+
+### Combining Commands with `&&`
+
+Not a git-specific operation, but sometimes it can be efficient to combine multiple commands with `&&`.  For example, say I need to checkout my `main` branch, pull the latest, then re-checkout my feature branch and rebase it onto `main` and push it.  I know this will all execute cleanly, and I don't want to sit around waiting for the asynchronous network commands to complete.  I can combine all these commands with `&&` and go do something else while they complete.  If any one of them fails for some reason the others will not execute, so it is a relatively safe shortcut:
+
+```shell
+$ git checkout main && git pull && git checkout - && git rebase main
+```
+
+## Contributing
+
+If you have suggestions, recommendations, or see problems that need fixing in this repo, feel free to open an issue or a pull request.  Thanks!
