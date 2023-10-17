@@ -202,6 +202,19 @@ then if piping to `less` it must include the `-r` flag to handle colors properly
     $ git restore --patch path/to/your.file
     ```
 
+### Showing a commit or stash
+
+A command that allows you to see the details and changes contained within a commit or stash
+
+- Review the diff of a commit:
+    ```shell
+    $ git show -p <commit_hash>
+    ```
+- Review the contents of stash reference `stash@{3}`:
+    ```shell
+    $ git show -p stash@{3}
+    ```
+
 ## Aliasing
 
 Create custom Git aliases for your favorite commands.
